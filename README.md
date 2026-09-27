@@ -1,8 +1,8 @@
 # short-text-spam-classification
 
-Trabalho de Graduação — Fatec Itapetininga  
-Curso: Análise e Desenvolvimento de Sistemas  
-Aluno: Edson Luiz Vieira de Souza  
+Trabalho de Graduação — Fatec Itapetininga
+Curso: Análise e Desenvolvimento de Sistemas
+Aluno: Edson Luiz Vieira de Souza
 Orientador: Prof. Danilo Ruy Gomes
 
 ---
@@ -27,12 +27,28 @@ O trabalho investiga como o recorte deliberado das **150 primeiras palavras** do
 - Acurácia
 - Precisão
 - Recall
-- F1-score
+- F1-score (métrica principal)
 
 ### Dataset
 
-[Enron Email Dataset — Metsis, Androutsopoulos e Paliouras (2006)](https://github.com/MWiechmann/enron_spam_data)  
-33.716 emails rotulados como spam ou ham em proporção aproximadamente equilibrada.
+[TREC 2007 Public Spam Corpus](https://www.kaggle.com/datasets/imdeepmind/preprocessed-trec-2007-public-corpus-dataset)
+73.932 emails rotulados (48.714 spam, 25.218 ham). Mediana de 192 palavras por email.
+
+---
+
+## Principais resultados
+
+| Algoritmo | F1-score (150 pal.) | F1-score (texto integral) | Delta |
+|-----------|:---:|:---:|:---:|
+| Random Forest | 0.9947 | 0.9961 | -0.0014 |
+| SVM | 0.9944 | 0.9960 | -0.0016 |
+| Regressão Logística | 0.9919 | 0.9944 | -0.0025 |
+| Naive Bayes | 0.9630 | 0.9627 | +0.0003 |
+
+- A truncagem de 150 palavras retém **99.75%+** do F1-score em todos os modelos.
+- SVM e Random Forest são **estatisticamente equivalentes** (McNemar p=1.0) e superiores aos demais (p<0.001).
+- O platô de desempenho começa em ~75–100 palavras; 150 é uma escolha conservadora e segura.
+- Naive Bayes é significativamente inferior, especialmente em recall (deixa spam passar).
 
 ---
 
@@ -41,18 +57,45 @@ O trabalho investiga como o recorte deliberado das **150 primeiras palavras** do
 ```
 short-text-spam-classification/
 ├── data/
-│   ├── enron_spam_data.csv       # Dataset (não versionado — ver instruções abaixo)
-│   └── README.md                 # Instruções para download do dataset
+│   ├── trec_2007.csv               # Dataset principal (não versionado)
+│   └── README.md
 ├── figures/
-│   └── exploratory_analysis.png  # Gráficos gerados pela análise
+│   ├── exploratory_analysis_trec.png
+│   ├── comparative_metrics_trec.png
+│   ├── confusion_matrices_trec.png
+│   ├── descriptive_stats_trec.png
+│   ├── preliminary_results.png
+│   └── conclusions/                 # Figuras das análises finais
+│       ├── error_overlap_heatmap.png
+│       ├── error_word_count_distribution.png
+│       ├── f1_score_intervalo_confianca.png
+│       ├── feature_importance_*.png
+│       ├── learning_curves_*.png
+│       ├── truncation_*.png
+│       └── tabela_significancia.png
+├── models/
+│   └── trec/                        # Modelos treinados e artefatos
+│       ├── model_naive_bayes.pkl
+│       ├── model_svm.pkl
+│       ├── model_random_forest.pkl
+│       ├── model_regressao_logística.pkl
+│       ├── tfidf.pkl
+│       ├── X_train_tfidf.pkl
+│       ├── X_test_tfidf.pkl
+│       ├── y_train.pkl
+│       ├── y_test.pkl
+│       └── results.csv
 ├── notebooks/
-│   ├── analise_exploratoria.ipynb
-│   └── main.ipynb
-├── src/
-│   └── methods/
-│       ├── evaluation.py         # Métricas e avaliação dos modelos
-│       ├── models.py             # Definição e treinamento dos classificadores
-│       └── preprocessing.py     # Pré-processamento e vetorização do texto
+│   ├── analise_exploratoria.ipynb        # Análise exploratória do corpus
+│   ├── 02_preprocessing_trec.ipynb       # Pré-processamento TREC 2007
+│   ├── 03_models_evaluation_trec.ipynb   # Treinamento e avaliação dos modelos
+│   └── conclusions/                      # Análises finais
+│       ├── 01_error_analysis.ipynb       # Análise detalhada de erros
+│       ├── 02_truncation_impact.ipynb    # Impacto do recorte (150 pal. vs integral)
+│       ├── 03_learning_curves.ipynb      # Curvas de aprendizado
+│       ├── 04_feature_importance.ipynb   # Importância das features
+│       ├── 05_statistical_tests.ipynb    # Testes estatísticos (Friedman, McNemar)
+│       └── 06_truncation_comparison.ipynb # Comparação de múltiplos recortes (25–500)
 ├── .gitignore
 ├── requirements.txt
 └── README.md
@@ -82,7 +125,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # 4. Baixe os dados do NLTK
-python3 -c "import nltk; nltk.download('stopwords'); nltk.download('punkt')"
+python3 -c "import nltk; nltk.download('stopwords'); nltk.download('punkt'); nltk.download('punkt_tab')"
 
 # 5. Inicie o Jupyter
 jupyter notebook
@@ -92,13 +135,26 @@ jupyter notebook
 
 O dataset não está versionado neste repositório por questões de tamanho. Para reproduzir os experimentos:
 
-1. Acesse [github.com/MWiechmann/enron_spam_data](https://github.com/MWiechmann/enron_spam_data)
-2. Baixe o arquivo `enron_spam_data.zip`
-3. Extraia e mova o arquivo `enron_spam_data.csv` para a pasta `data/`
+1. Acesse o [TREC 2007 no Kaggle](https://www.kaggle.com/datasets/imdeepmind/preprocessed-trec-2007-public-corpus-dataset)
+2. Baixe o dataset e mova o CSV para `data/trec_2007.csv`
+
+Alternativamente, o notebook `02_preprocessing_trec.ipynb` faz o download automático via `kagglehub`.
 
 ---
 
-## Dependências
+## Pipeline de pré-processamento
+
+1. Truncagem para as **150 primeiras palavras**
+2. Conversão para minúsculas
+3. Remoção de caracteres não-alfabéticos
+4. Tokenização (NLTK `word_tokenize`)
+5. Remoção de stopwords (inglês)
+6. Vetorização TF-IDF (`max_features=10000`, `ngram_range=(1,2)`, `sublinear_tf=True`)
+7. Split estratificado 80/20 (`random_state=42`)
+
+---
+
+## Dependências principais
 
 ```
 pandas==2.2.0
