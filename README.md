@@ -73,29 +73,18 @@ short-text-spam-classification/
 │       ├── learning_curves_*.png
 │       ├── truncation_*.png
 │       └── tabela_significancia.png
-├── models/
-│   └── trec/                        # Modelos treinados e artefatos
-│       ├── model_naive_bayes.pkl
-│       ├── model_svm.pkl
-│       ├── model_random_forest.pkl
-│       ├── model_regressao_logística.pkl
-│       ├── tfidf.pkl
-│       ├── X_train_tfidf.pkl
-│       ├── X_test_tfidf.pkl
-│       ├── y_train.pkl
-│       ├── y_test.pkl
-│       └── results.csv
 ├── notebooks/
 │   ├── analise_exploratoria.ipynb        # Análise exploratória do corpus
 │   ├── 02_preprocessing_trec.ipynb       # Pré-processamento TREC 2007
 │   ├── 03_models_evaluation_trec.ipynb   # Treinamento e avaliação dos modelos
-│   └── conclusions/                      # Análises finais
-│       ├── 01_error_analysis.ipynb       # Análise detalhada de erros
-│       ├── 02_truncation_impact.ipynb    # Impacto do recorte (150 pal. vs integral)
-│       ├── 03_learning_curves.ipynb      # Curvas de aprendizado
-│       ├── 04_feature_importance.ipynb   # Importância das features
-│       ├── 05_statistical_tests.ipynb    # Testes estatísticos (Friedman, McNemar)
-│       └── 06_truncation_comparison.ipynb # Comparação de múltiplos recortes (25–500)
+│   ├── conclusions/                      # Análises finais
+│   │   ├── 01_error_analysis.ipynb       # Análise detalhada de erros
+│   │   ├── 02_truncation_impact.ipynb    # Impacto do recorte (150 pal. vs integral)
+│   │   ├── 03_learning_curves.ipynb      # Curvas de aprendizado
+│   │   ├── 04_feature_importance.ipynb   # Importância das features
+│   │   ├── 05_statistical_tests.ipynb    # Testes estatísticos (Friedman, McNemar)
+│   │   └── 06_truncation_comparison.ipynb # Comparação de múltiplos recortes (25–500)
+│   └── legacy/                           # Notebooks legados (experimentos Enron)
 ├── .gitignore
 ├── requirements.txt
 └── README.md
@@ -114,7 +103,7 @@ short-text-spam-classification/
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/seu-usuario/short-text-spam-classification.git
+git clone https://github.com/EdsonLuiz-Dev/short-text-spam-classification.git
 cd short-text-spam-classification
 
 # 2. Crie e ative o ambiente virtual
